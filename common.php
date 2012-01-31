@@ -4,8 +4,6 @@ define('LATENIGHTFILE', 'latenight.yml');
 define('MEALHALLURL', 'http://www.campusdish.com/en-US/CA/MountAllison');
 //define('MEALHALLURL', 'cache.html');
 define('DEVMODE', false);
-$meals = array('menu1' => 'Breakfast', 'menu2' => 'Lunch', 'menu3' => 'Dinner');
-$weekendmeals = array('menu1' => 'Continental', 'menu2' => 'Brunch', 'menu3' => 'Dinner');
 function loaddata() {
 	global $meals, $weekendmeals;
 	static $groups = array(
@@ -19,8 +17,6 @@ function loaddata() {
 	$latenight = yaml_parse_file(LATENIGHTFILE);
 	if (isset($latenight[date('j')]))
 		$lnight = $latenight[date('j')];
-	if ((date('N') == 6) || (date('N') == 7))
-		$meals = $weekendmeals;
 	if (!file_exists(CACHEFILE))
 		file_put_contents(CACHEFILE, yaml_emit(array('cachedate' => 0)));
 	$data = yaml_parse_file(CACHEFILE);
@@ -30,10 +26,15 @@ function loaddata() {
 		$table = $file->find('div#WCChalkboard_NewMenu', 0);
 		if ($table === null)
 			die ('Unable to retrieve data');
+		$i = 1;
+		foreach ($table->find('img[alt]') as $img) {
+			$meals['menu'.$i++] = $img->alt;
+		}
 		foreach ($table->find('td') as $data) {
 			$partable = $data->parent()->parent()->id;
 			if (!$partable)
 				continue;
+
 			$type = '';
 			$food = '';
 			foreach($data->find('div.section b,div.section a,div.section xml') as $tag) {

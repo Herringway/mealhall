@@ -23,18 +23,16 @@
 <ul id="{$_key}" title="{$_key}">
 {loop $}<li class="group">{$_key}</li>
 {loop $}
-	<li><a href="#{str_replace(array(',',' '), '', $_key)}">{$_key}</a></li>
+	<li><a href="#{preg_replace('/[^a-zA-Z0-9]/', '', $_key)}">{$_key}</a></li>
 {/loop}{/loop}</ul>
 {/loop}
 {loop $foods}{loop $}{loop $}
-<ul id="{str_replace(array(',',' '), '', $_key)}" title="{$_key}">
+<ul id="{preg_replace('/[^a-zA-Z0-9]/', '', $_key)}" title="{$_key}">
 {if $ == null}	<li>No nutritional data available</li>
-{else}
-{loop $}{if is_array($)}	<li class="group">{$_key}</li>
-{loop $}		<li>{$_key}: {$}</li>{/loop}
-{else}	<li>{$_key}: {$}</li>{/if}{/loop}
-{/if}
-</ul>
+{else}{loop $}{if is_array($)}	<li class="group">{$_key}</li>
+{loop $}		<li>{$_key}: {$}</li>
+{/loop}{else}	<li>{$_key}: {$}</li>{/if}
+{/loop}{/if}</ul>
 {/loop}{/loop}{/loop}
 </body>
 </html>
