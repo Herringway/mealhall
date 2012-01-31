@@ -1,23 +1,28 @@
 <?php
 define('CACHEFILE', 'cache.yml');
+define('LATENIGHTFILE', 'latenight.yml');
 define('MEALHALLURL', 'http://www.campusdish.com/en-US/CA/MountAllison');
 //define('MEALHALLURL', 'cache.html');
 define('DEVMODE', false);
 $meals = array('menu1' => 'Breakfast', 'menu2' => 'Lunch', 'menu3' => 'Dinner');
 $weekendmeals = array('menu1' => 'Continental', 'menu2' => 'Brunch', 'menu3' => 'Dinner');
-$groups = array(
-24 => 'Vitamins', 20 => 'Vitamins', 21 => 'Vitamins', 22 => 'Vitamins', 16 => 'Vitamins', 19 => 'Vitamins',
-'05' => 'Energy', '02' => 'Energy', '04' => 'Energy', 30 => 'Energy', '03' => 'Energy', 28 => 'Energy',
-'07' => 'Other', '09' => 'Other', '11' => 'Other', '31' => 'Other'
-);
 function loaddata() {
-	global $meals, $weekendmeals, $groups;
+	global $meals, $weekendmeals;
+	static $groups = array(
+	24 => 'Vitamins', 20 => 'Vitamins', 21 => 'Vitamins', 22 => 'Vitamins', 16 => 'Vitamins', 19 => 'Vitamins',
+	'05' => 'Energy', '02' => 'Energy', '04' => 'Energy', 30 => 'Energy', '03' => 'Energy', 28 => 'Energy',
+	'07' => 'Other', '09' => 'Other', '11' => 'Other', '31' => 'Other'
+	);
 	$lnight = null;
-	$latenight = yaml_parse_file('latenight.yml');
+	if (!file_exists(LATENIGHTFILE))
+		file_put_contents(LATENIGHTFILE, yaml_emit(array()));
+	$latenight = yaml_parse_file(LATENIGHTFILE);
 	if (isset($latenight[date('j')]))
 		$lnight = $latenight[date('j')];
 	if ((date('N') == 6) || (date('N') == 7))
 		$meals = $weekendmeals;
+	if (!file_exists(CACHEFILE))
+		file_put_contents(CACHEFILE, yaml_emit(array('cachedate' => 0)));
 	$data = yaml_parse_file(CACHEFILE);
 	if (DEVMODE || (($data['cachedate'] != date('j')) && (date('G') >= 2))) {
 		require_once('simple_html_dom.php');
