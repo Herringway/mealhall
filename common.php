@@ -3,7 +3,8 @@ define('CACHEFILE', 'cache.yml');
 define('LATENIGHTFILE', 'latenight.yml');
 define('MEALHALLURL', 'http://www.campusdish.com/en-US/CA/MountAllison');
 //define('MEALHALLURL', 'cache.html');
-define('DEVMODE', false);
+define('DEVMODE', true);
+date_default_timezone_set('America/Halifax');
 function loaddata() {
 	global $meals, $weekendmeals;
 	static $groups = array(
@@ -20,12 +21,12 @@ function loaddata() {
 	if (!file_exists(CACHEFILE))
 		file_put_contents(CACHEFILE, yaml_emit(array('cachedate' => 0)));
 	$data = yaml_parse_file(CACHEFILE);
-	if (DEVMODE || (($data['cachedate'] != date('j')) && (date('G') >= 2))) {
+	if (!DEVMODE && (($data['cachedate'] != date('j')) && (date('G') >= 2))) {
 		require_once('simple_html_dom.php');
 		$file = file_get_html(MEALHALLURL);
 		$table = $file->find('div#WCChalkboard_NewMenu', 0);
 		if ($table === null)
-			die ('Unable to retrieve data');
+			die ('Menu data unavailable');
 		$i = 1;
 		foreach ($table->find('img[alt]') as $img) {
 			$meals['menu'.$i++] = $img->alt;
@@ -65,5 +66,10 @@ function loaddata() {
 		file_put_contents(CACHEFILE, yaml_emit($data));
 	}
 	return $data;
+}
+function xmlentities($string) {
+	if (!defined('PHP_VERSION_ID') || PHP_VERSION_ID < 50400)
+		return str_replace ( array ( '&', '"', "'", '<', '>' ), array ( '&amp;' , '&quot;', '&apos;' , '&lt;' , '&gt;' ), $string );
+	return htmlentities($string, ENT_XML1);
 }
 ?>
