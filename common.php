@@ -3,7 +3,7 @@ define('CACHEFILE', 'cache.yml');
 define('LATENIGHTFILE', 'latenight.yml');
 define('MEALHALLURL', 'http://www.campusdish.com/en-US/CA/MountAllison');
 //define('MEALHALLURL', 'cache.html');
-define('DEVMODE', true);
+define('DEVMODE', false);
 date_default_timezone_set('America/Halifax');
 function loaddata() {
 	global $meals, $weekendmeals;
@@ -21,7 +21,7 @@ function loaddata() {
 	if (!file_exists(CACHEFILE))
 		file_put_contents(CACHEFILE, yaml_emit(array('cachedate' => 0)));
 	$data = yaml_parse_file(CACHEFILE);
-	if (!DEVMODE && (($data['cachedate'] != date('j')) && (date('G') >= 2))) {
+	if (DEVMODE || (($data['cachedate'] != date('j')) && (date('G') >= 2))) {
 		require_once('simple_html_dom.php');
 		$file = file_get_html(MEALHALLURL);
 		$table = $file->find('div#WCChalkboard_NewMenu', 0);
