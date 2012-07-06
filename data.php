@@ -6,7 +6,6 @@ define('MEALHALLURL', 'http://www.campusdish.com/en-US/CA/MountAllison');
 define('DEVMODE', false);
 date_default_timezone_set('America/Halifax');
 function loaddata() {
-	global $meals, $weekendmeals;
 	static $groups = array(
 	24 => 'Vitamins', 20 => 'Vitamins', 21 => 'Vitamins', 22 => 'Vitamins', 16 => 'Vitamins', 19 => 'Vitamins',
 	'05' => 'Energy', '02' => 'Energy', '04' => 'Energy', 30 => 'Energy', '03' => 'Energy', 28 => 'Energy',
@@ -25,12 +24,14 @@ function loaddata() {
 		require_once('simple_html_dom.php');
 		$file = file_get_html(MEALHALLURL);
 		$table = $file->find('div#WCChalkboard_NewMenu', 0);
-		if ($table === null)
-			die ('Menu data unavailable');
-		$i = 1;
-		foreach ($table->find('img[alt]') as $img) {
-			$meals['menu'.$i++] = $img->alt;
+		if ($table === null) {
+			header("Status: 404 Not Found");
+			die ('No menu data available');
 		}
+		$i = 1;
+		foreach ($table->find('img[alt]') as $img)
+			$meals['menu'.$i++] = $img->alt;
+
 		foreach ($table->find('td') as $data) {
 			$partable = $data->parent()->parent()->id;
 			if (!$partable)
@@ -58,11 +59,12 @@ function loaddata() {
 									$p2 = $item->v;
 						}
 					}
-					$foods[$meals[$partable]][$type][$food] = ($p1 && $p2 ? array('Portion Size' => $p1.' '.$p2) : array()) + $tmp;
+					$meallist[$meals[$partable]][$type][] = $food;
+					$foodlist[$food] = ($p1 && $p2 ? array('Portion Size' => $p1.' '.$p2) : array()) + $tmp;
 				}
 			}
 		}
-		$data = array('cachedate' => date('j'), 'foods' => $foods, 'meals' => $meals, 'latenight' => $lnight);
+		$data = array('cachedate' => date('j'), 'meallist' => $meallist, 'foodlist' => $foodlist, 'latenight' => $lnight);
 		file_put_contents(CACHEFILE, yaml_emit($data));
 	}
 	return $data;
@@ -72,4 +74,6 @@ function xmlentities($string) {
 		return str_replace ( array ( '&', '"', "'", '<', '>' ), array ( '&amp;' , '&quot;', '&apos;' , '&lt;' , '&gt;' ), $string );
 	return htmlentities($string, ENT_XML1);
 }
+header('Content-Type: application/json; charset=utf-8');
+echo json_encode(loaddata(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_FORCE_OBJECT); 
 ?>

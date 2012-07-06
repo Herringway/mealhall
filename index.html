@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html ng-app>
+	<head>
+		<title>Meal Hall</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+		<link rel="stylesheet" href="jmtheme.css" type="text/css" />
+		<link rel="stylesheet" href="jmstruct.css" type="text/css" />
+		<script type="application/x-javascript" src="jquery.js"></script>
+		<script type="application/x-javascript" src="jquery-mobile.js"></script>
+		<script type="application/x-javascript" src="angular.js"></script>
+		<script type="text/javascript">
+		function getFood($scope, $http) {
+			$http.get('/data.php').success(function(data) {
+				$scope.meallist = data.meallist;
+				$scope.foodlist = data.foodlist;
+				$scope.latenight = data.latenight;
+			}).error(function(data) {
+				$scope.error = data;
+				$.mobile.changePage('#error', 'pop', false, false);
+			});
+		};
+		</script>
+		<link rel="apple-touch-icon" href="/burg.png"/>
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+	</head>
+	<body ng-controller="getFood">
+		<div id="one" data-role="page">
+			<div data-role="header">
+				<h1>Meals</h1>
+			</div>
+			<div data-role="content">
+				<ul data-role="listview" data-inset="true">
+					<li ng-repeat="(mealname, meal) in meallist"><a href="#{{mealname}}">{{mealname}}</a></li>
+					<li ng-show="latenight">Late Night: {{latenight}}</li>
+				</ul>
+			</div>
+		</div>
+		<div id="error" data-role="dialog">
+			<div data-role="header"><h1>Error!</h1></div>
+			<div data-role="content"><p>{{error}}</p></div>
+		</div>
+		<div ng-repeat="(mealname, meal) in meallist" id="{{mealname}}" data-role="page" data-add-back-btn="true">
+			<div data-role="header">
+				<h1>{{mealname}}</h1>
+			</div>
+			<div data-role="content">
+				<ul data-role="listview" data-inset="true" ng-repeat="(placename, location) in meal">
+					<li class="group" data-role="list-divider">{{placename}}</li>
+					<li ng-repeat="food in location"><a href="#{{food}}">{{food}}</a></li>
+				</ul>
+			</div>
+		</div>
+		<div ng-repeat="(food,values) in foodlist" id="{{food}}" data-role="dialog" data-add-back-btn="true">
+			<div data-role="header">
+				<h1>Nutritional Information for {{food}}</h1>
+			</div>
+			<div data-role="content">
+				<ul data-role="listview" data-inset="true">
+					<li ng-repeat="(nutrient, value) in values">{{nutrient}}: {{value}}</li>
+					<li ng-hide="values">Nutritional Information unavailable</li>
+				</ul>
+			</div>
+		</div>
+	</body>
+</html>
