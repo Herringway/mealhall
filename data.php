@@ -1,8 +1,8 @@
 <?php
 define('CACHEFILE', 'cache.yml');
 define('LATENIGHTFILE', 'latenight.yml');
-//define('MEALHALLURL', 'http://www.campusdish.com/en-US/CA/MountAllison');
-define('MEALHALLURL', 'mealhall.html');
+define('MEALHALLURL', 'http://www.campusdish.com/en-US/CA/MountAllison');
+//define('MEALHALLURL', 'mealhall.html');
 define('DEVMODE', false);
 date_default_timezone_set('America/Halifax');
 function loaddata() {
