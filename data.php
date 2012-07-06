@@ -1,16 +1,11 @@
 <?php
 define('CACHEFILE', 'cache.yml');
 define('LATENIGHTFILE', 'latenight.yml');
-define('MEALHALLURL', 'http://www.campusdish.com/en-US/CA/MountAllison');
-//define('MEALHALLURL', 'cache.html');
+//define('MEALHALLURL', 'http://www.campusdish.com/en-US/CA/MountAllison');
+define('MEALHALLURL', 'mealhall.html');
 define('DEVMODE', false);
 date_default_timezone_set('America/Halifax');
 function loaddata() {
-	static $groups = array(
-	24 => 'Vitamins', 20 => 'Vitamins', 21 => 'Vitamins', 22 => 'Vitamins', 16 => 'Vitamins', 19 => 'Vitamins',
-	'05' => 'Energy', '02' => 'Energy', '04' => 'Energy', 30 => 'Energy', '03' => 'Energy', 28 => 'Energy',
-	'07' => 'Other', '09' => 'Other', '11' => 'Other', '31' => 'Other'
-	);
 	$lnight = null;
 	if (!file_exists(LATENIGHTFILE))
 		file_put_contents(LATENIGHTFILE, yaml_emit(array()));
@@ -51,7 +46,7 @@ function loaddata() {
 					foreach ($tag->find('item') as $item) {
 						if ($item->v != "") {
 							if ($item->n != "")
-								$tmp[$groups[str_replace('NUTRVAL', '', $item->id)]][html_entity_decode(trim($item->n))] = ucfirst(strtolower(str_replace('  ', ' ',preg_replace('/[^a-zA-Z0-9\s\.]/', ' ', html_entity_decode(trim($item->v))))));
+								$tmp[html_entity_decode(trim($item->n))] = ucfirst(strtolower(str_replace('  ', ' ',preg_replace('/[^a-zA-Z0-9\s\.]/', ' ', html_entity_decode(trim($item->v))))));
 							else
 								if ($item->id == "PortionSize2")
 									$p1 = $item->v;
@@ -60,7 +55,7 @@ function loaddata() {
 						}
 					}
 					$meallist[$meals[$partable]][$type][] = $food;
-					$foodlist[$food] = ($p1 && $p2 ? array('Portion Size' => $p1.' '.$p2) : array()) + $tmp;
+					$foodlist[$food] = ($p1 && $p2 ? array(' Portion Size' => $p1.' '.$p2) : array()) + $tmp;
 				}
 			}
 		}

@@ -50,14 +50,14 @@
 				</ul>
 			</div>
 		</div>
-		<div ng-repeat="(food,values) in foodlist" id="{{food}}" data-role="dialog" data-add-back-btn="true">
+		<div ng-repeat="(food,categories) in foodlist" id="{{food}}" data-role="dialog" data-add-back-btn="true">
 			<div data-role="header">
-				<h1>Nutritional Information for {{food}}</h1>
+				<h1>{{food}}</h1>
 			</div>
 			<div data-role="content">
+				<p ng-hide="categories">Nutritional Information unavailable</p>
 				<ul data-role="listview" data-inset="true">
-					<li ng-repeat="(nutrient, value) in values">{{nutrient}}: {{value}}</li>
-					<li ng-hide="values">Nutritional Information unavailable</li>
+					<li ng-repeat="(nutrient, value) in categories">{{nutrient}}: {{value}}</li>
 				</ul>
 			</div>
 		</div>
