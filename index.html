@@ -3,9 +3,9 @@
 	<head>
 		<title>Meal Hall</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-		<script type="application/x-javascript" src="angular.js"></script>
 		<script type="application/x-javascript" src="jquery.js"></script>
 		<script type="application/x-javascript" src="jquery-mobile.js"></script>
+		<script type="application/x-javascript" src="angular.js"></script>
 		<link rel="stylesheet" href="jmtheme.css" type="text/css" />
 		<link rel="stylesheet" href="jmstruct.css" type="text/css" />
 		<script type="text/javascript">
@@ -30,8 +30,8 @@
 			</div>
 			<div data-role="content">
 				<ul data-role="listview" data-inset="true">
-					<li ng-repeat="(mealname, meal) in meallist"><a href="#{{mealname}}">{{mealname}}</a></li>
-					<li ng-show="latenight">Late Night: {{latenight}}</li>
+					<li ng-repeat="(mealname, meal) in meallist"><a ng-bind-template="{{mealname}}" href="#{{mealname}}"></a></li>
+					<li ng-bind-template="Late Night: {{latenight}}" ng-show="latenight">Late Night: Loading data</li>
 				</ul>
 			</div>
 		</div>
