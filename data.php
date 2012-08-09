@@ -5,6 +5,10 @@ define('MEALHALLURL', 'http://www.campusdish.com/en-US/CA/MountAllison');
 //define('MEALHALLURL', 'mealhall.html');
 define('DEVMODE', false);
 date_default_timezone_set('America/Halifax');
+function baddata($msg) {
+	header("Status: 503 Service Unavailable");
+	die ($msg);
+}
 function loaddata() {
 	$lnight = null;
 	if (!file_exists(LATENIGHTFILE))
@@ -19,10 +23,8 @@ function loaddata() {
 		require_once('simple_html_dom.php');
 		$file = file_get_html(MEALHALLURL);
 		$table = $file->find('div#WCChalkboard_NewMenu', 0);
-		if ($table === null) {
-			header("Status: 404 Not Found");
-			die ('No menu data available');
-		}
+		if ($table === null)
+			baddata('No menu data available');
 		$i = 1;
 		foreach ($table->find('img[alt]') as $img)
 			$meals['menu'.$i++] = $img->alt;
