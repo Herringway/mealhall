@@ -10,7 +10,7 @@
 		<link rel="stylesheet" href="jmstruct.css" type="text/css" />
 		<script type="text/javascript">
 		function getFood($scope, $http) {
-			$http.get('/data.php').success(function(data) {
+			$http.get('/data').success(function(data) {
 				$scope.meallist = data.meallist;
 				$scope.foodlist = data.foodlist;
 				$scope.latenight = data.latenight;
