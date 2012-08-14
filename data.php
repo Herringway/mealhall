@@ -24,7 +24,7 @@ function loaddata() {
 		$file = file_get_html(MEALHALLURL);
 		$table = $file->find('div#WCChalkboard_NewMenu', 0);
 		if ($table === null)
-			baddata('No menu data available');
+			baddata('No soup for you!<br/> (menu data unavailable)');
 		$i = 1;
 		foreach ($table->find('img[alt]') as $img)
 			$meals['menu'.$i++] = $img->alt;
