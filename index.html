@@ -10,6 +10,7 @@
 		<link rel="stylesheet" href="jmstruct.css" type="text/css" />
 		<script type="text/javascript">
 		function getFood($scope, $http) {
+			$scope.theme = 'b';
 			$http.get('/data').success(function(data) {
 				$scope.meallist = data.meallist;
 				$scope.foodlist = data.foodlist;
@@ -29,7 +30,8 @@
 				<h1>Meals</h1>
 			</div>
 			<div data-role="content">
-				<ul data-role="listview" data-inset="true">
+				<ul data-role="listview" data-inset="true" data-theme="{{theme}}">
+					<li class="group" data-role="list-divider"></li>
 					<li ng-repeat="(mealname, meal) in meallist"><a ng-bind-template="{{mealname}}" href="#{{mealname}}"></a></li>
 					<li ng-bind-template="Late Night: {{latenight}}" ng-show="latenight">Late Night: Loading data</li>
 				</ul>
@@ -39,25 +41,24 @@
 			<div data-role="header"><h1>Error!</h1></div>
 			<div data-role="content"><p>{{error}}</p></div>
 		</div>
-		<div ng-repeat="(mealname, meal) in meallist" id="{{mealname}}" data-role="page" data-add-back-btn="true">
+		<div ng-repeat="(mealname, meal) in meallist" id="{{mealname}}" data-role="page" data-add-back-btn="true" data-theme="{{theme}}">
 			<div data-role="header">
 				<h1>{{mealname}}</h1>
 			</div>
-			<div data-role="content">
+			<div data-role="content" class="content-primary">
 				<ul data-role="listview" data-inset="true" ng-repeat="(placename, location) in meal">
 					<li class="group" data-role="list-divider">{{placename}}</li>
 					<li ng-repeat="food in location"><a href="#{{food}}">{{food}}</a></li>
 				</ul>
 			</div>
 		</div>
-		<div ng-repeat="(food,categories) in foodlist" id="{{food}}" data-role="dialog" data-add-back-btn="true">
+		<div ng-repeat="(food,categories) in foodlist" id="{{food}}" data-role="dialog" data-add-back-btn="true" data-theme="{{theme}}">
 			<div data-role="header">
 				<h1>{{food}}</h1>
 			</div>
 			<div data-role="content">
-				<p ng-hide="categories">Nutritional Information unavailable</p>
 				<ul data-role="listview" data-inset="true">
-					<li ng-repeat="(nutrient, value) in categories">{{nutrient}}: {{value}}</li>
+					<li ng-repeat="(nutrient, value) in categories">{{nutrient}}<span class="ui-li-count">{{value}}<span></li>
 				</ul>
 			</div>
 		</div>

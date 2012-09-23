@@ -19,7 +19,7 @@ function loaddata() {
 	if (!file_exists(CACHEFILE))
 		file_put_contents(CACHEFILE, yaml_emit(array('cachedate' => 0)));
 	$data = yaml_parse_file(CACHEFILE);
-	if (DEVMODE || (($data['cachedate'] != date('j')) && (date('G') >= 2))) {
+	if (DEVMODE || isset($data['cachedate']) || (($data['cachedate'] != date('j')) && (date('G') >= 2))) {
 		require_once('simple_html_dom.php');
 		$file = file_get_html(MEALHALLURL);
 		$table = $file->find('div#WCChalkboard_NewMenu', 0);
@@ -57,7 +57,8 @@ function loaddata() {
 						}
 					}
 					$meallist[$meals[$partable]][$type][] = $food;
-					$foodlist[$food] = ($p1 && $p2 ? array(' Portion Size' => $p1.' '.$p2) : array()) + $tmp;
+					if ($p1 && $p2)
+						$foodlist[$food] = array(' Portion Size' => $p1.' '.$p2) + $tmp;
 				}
 			}
 		}
