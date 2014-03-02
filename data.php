@@ -19,7 +19,7 @@ function loaddata() {
 	if (!file_exists(CACHEFILE))
 		file_put_contents(CACHEFILE, yaml_emit(array('cachedate' => 0)));
 	$data = yaml_parse_file(CACHEFILE);
-	if (DEVMODE || isset($data['cachedate']) || (($data['cachedate'] != date('j')) && (date('G') >= 2))) {
+	if (DEVMODE || !isset($data['cachedate']) || (($data['cachedate'] != date('j')) && (date('G') >= 2))) {
 		require_once('simple_html_dom.php');
 		$file = file_get_html(MEALHALLURL);
 		$table = $file->find('div#WCChalkboard_NewMenu', 0);
@@ -72,6 +72,8 @@ function xmlentities($string) {
 		return str_replace ( array ( '&', '"', "'", '<', '>' ), array ( '&amp;' , '&quot;', '&apos;' , '&lt;' , '&gt;' ), $string );
 	return htmlentities($string, ENT_XML1);
 }
+if (!function_exists('yaml_parse_file'))
+	baddata('error generating menu');
 header('Content-Type: application/json; charset=utf-8');
 echo json_encode(loaddata(), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_FORCE_OBJECT); 
 ?>
